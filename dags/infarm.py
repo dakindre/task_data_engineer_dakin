@@ -1,79 +1,63 @@
-from datetime import timedelta
-
-# The DAG object; we'll need this to instantiate a DAG
+import os
+import json
+import requests
+import yaml as _yaml
 from airflow import DAG
-# Operators; we need this to operate!
-from airflow.operators.bash_operator import BashOperator
-from airflow.utils.dates import days_ago
-# These args will get passed on to each operator
-# You can override them on a per-task basis during operator initialization
-default_args = {
-    'owner': 'airflow',
-    'depends_on_past': False,
-    'start_date': days_ago(2),
-    'email': ['airflow@example.com'],
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
-    # 'queue': 'bash_queue',
-    # 'pool': 'backfill',
-    # 'priority_weight': 10,
-    # 'end_date': datetime(2016, 1, 1),
-    # 'wait_for_downstream': False,
-    # 'dag': dag,
-    # 'sla': timedelta(hours=2),
-    # 'execution_timeout': timedelta(seconds=300),
-    # 'on_failure_callback': some_function,
-    # 'on_success_callback': some_other_function,
-    # 'on_retry_callback': another_function,
-    # 'sla_miss_callback': yet_another_function,
-    # 'trigger_rule': 'all_success'
-}
-dag = DAG(
-    'infarm',
-    default_args=default_args,
-    description='A simple tutorial DAG',
-    schedule_interval=timedelta(days=1),
-)
+# import dagfactory
 
-# t1, t2 and t3 are examples of tasks created by instantiating operators
-t1 = BashOperator(
-    task_id='print_date',
-    bash_command='date',
-    dag=dag,
-)
+from airflow.models.baseoperator import BaseOperator
+from airflow.utils.decorators import apply_defaults
 
-t2 = BashOperator(
-    task_id='sleep',
-    depends_on_past=False,
-    bash_command='sleep 5',
-    retries=3,
-    dag=dag,
-)
-dag.doc_md = __doc__
+class ApiRequest:
+  def __init__(self):
+    self.zoho_client_id, self.zoho_client_secret, self.zoho_refresh_token = self.get_creds()
+    self.zoho_access_token = self.get_access_token()
+    self.zoho_org = self.get_zoho_org()
 
-t1.doc_md = """\
-#### Task Documentation
-You can document your task using the attributes `doc_md` (markdown),
-`doc` (plain text), `doc_rst`, `doc_json`, `doc_yaml` which gets
-rendered in the UI's Task Instance Details page.
-![img](http://montcs.bloomu.edu/~bobmon/Semesters/2012-01/491/import%20soul.png)
-"""
-templated_command = """
-{% for i in range(5) %}
-    echo "{{ ds }}"
-    echo "{{ macros.ds_add(ds, 7)}}"
-    echo "{{ params.my_param }}"
-{% endfor %}
-"""
 
-t3 = BashOperator(
-    task_id='templated',
-    depends_on_past=False,
-    bash_command=templated_command,
-    params={'my_param': 'Parameter I passed in'},
-    dag=dag,
-)
+  def get_creds(self):
+    config_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'credentials.yml')
+    with open(config_path) as config_file:
+      creds = _yaml.load(config_file, Loader=_yaml.FullLoader)
 
-t1 >> [t2, t3]
+      zoho_client_id = creds['zoho']['client_id']
+      zoho_client_secret = creds['zoho']['client_secret']
+      zoho_refresh_token = creds['zoho']['refresh_token']
+
+      return zoho_client_id, zoho_client_secret, zoho_refresh_token
+
+  def get_access_token(self):
+    url = f'https://accounts.zoho.com/oauth/v2/token?refresh_token={self.zoho_refresh_token}&client_id={self.zoho_client_id}&client_secret={self.zoho_client_secret}&redirect_uri=http://www.zoho.com/books&grant_type=refresh_token'
+    response = requests.request("POST", url, data = {})
+
+    return response.json()['access_token']
+
+
+  def get_zoho_org(self):
+    url = "https://inventory.zoho.com/api/v1/organizations?="
+    headers = {
+      'Authorization': f'Zoho-oauthtoken {self.zoho_access_token}'
+    }
+
+    response = requests.request("GET", url, headers=headers, data = {})
+    return response.json()['organizations'][0]['organization_id']
+
+  def update_zoho_item(self):
+    url = f'https://inventory.zoho.com/api/v1/items?organization_id={self.zoho_org}'
+    print(url)
+    response = requests.request("POST", url, data = {})
+    print(response.json())
+
+
+    # r = requests.put('https://httpbin.org/put', data = {'key':'value'})
+
+if __name__ == "__main__":
+    api = ApiRequest()
+    api.update_zoho_item()
+
+
+
+# dag_factory = dagfactory.DagFactory(os.path.join(os.path.dirname(os.path.realpath(__file__)), "dag_factory.yml"))
+
+# dag_factory.clean_dags(globals())
+# dag_factory.generate_dags(globals())
