@@ -1,12 +1,24 @@
 import os
-import json
+import time
 import requests
+import json
 import yaml as _yaml
 from airflow import DAG
-# import dagfactory
+from airflow.utils.dates import days_ago
+from airflow.operators.python_operator import PythonOperator
 
-from airflow.models.baseoperator import BaseOperator
-from airflow.utils.decorators import apply_defaults
+item_args = {
+    'name': 'test_2',
+    'start_date': days_ago(2)
+}
+
+dag = DAG(
+    dag_id='zoho',
+    default_args=item_args,
+    description='A dag to interact with zoho API',
+    schedule_interval=None
+)
+
 
 class ApiRequest:
   def __init__(self):
@@ -42,22 +54,39 @@ class ApiRequest:
     response = requests.request("GET", url, headers=headers, data = {})
     return response.json()['organizations'][0]['organization_id']
 
-  def update_zoho_item(self):
+
+  def create_item(self):
     url = f'https://inventory.zoho.com/api/v1/items?organization_id={self.zoho_org}'
     print(url)
-    response = requests.request("POST", url, data = {})
+    headers = {
+      'Authorization': f'Zoho-oauthtoken {self.zoho_access_token}',
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    }
+
+    payload = {'JSONString': '{"name": "test_ohhhh_yeah"}'}
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.json())
+
+  def update_zoho_item(self):
+    url = f'https://inventory.zoho.com/api/v1/items?organization_id={self.zoho_org}'
+    headers = {
+      'Authorization': f'Zoho-oauthtoken {self.zoho_access_token}'
+    }
+
+    payload = {'JSONString': '{"name": ""}'}
+
+    response = requests.request("POST", url, headers=headers, data = payload)
     print(response.json())
 
 
-    # r = requests.put('https://httpbin.org/put', data = {'key':'value'})
-
-if __name__ == "__main__":
+def main():
     api = ApiRequest()
-    api.update_zoho_item()
+    api.create_item()
 
+task = PythonOperator(
+    task_id='zoho_item_insert',
+    python_callable=main,
+    dag=dag,
+)
 
-
-# dag_factory = dagfactory.DagFactory(os.path.join(os.path.dirname(os.path.realpath(__file__)), "dag_factory.yml"))
-
-# dag_factory.clean_dags(globals())
-# dag_factory.generate_dags(globals())
