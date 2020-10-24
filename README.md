@@ -19,7 +19,7 @@ This level breaks down the mission by farming_unit, column, tray, and growth_sta
 The third level represents the "tasks" belonging to the farming_units. Again this is structured in an array to accomodate the unknown number of tasks belonging to any particular farming_unit. The example structure is (name, type, description, logged_at). Of course there may be a need for more fields but for the purposes of this example I think it's sufficient. As you can see in the example the name and type field refer to any number of actions relating to the farming_unit_id. The idea would be that these are based on logic within the application where a category is selected such as note or harvest. As that category list grows on the app however this array structure could accomodate. You wouldn't need to modify anything on the back-end.
 
 
-![alt_text](/images/Infarm.PNG)
+![alt_text](/images/Infarm.png)
 
 
 #### Strengths/Drawback
