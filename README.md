@@ -19,6 +19,7 @@ This level breaks down the mission by farming_unit, column, tray, and growth_sta
 The third level represents the "tasks" belonging to the farming_units. Again this is structured in an array to accomodate the unknown number of tasks belonging to any particular farming_unit. The example structure is (name, type, description, logged_at). Of course there may be a need for more fields but for the purposes of this example I think it's sufficient. As you can see in the example the name and type field refer to any number of actions relating to the farming_unit_id. The idea would be that these are based on logic within the application where a category is selected such as note or harvest. As that category list grows on the app however this array structure could accomodate. You wouldn't need to modify anything on the back-end.
 
 
+![alt_text](/images/infarm.PNG)
 
 
 #### Strengths/Drawback
@@ -28,7 +29,6 @@ The third level represents the "tasks" belonging to the farming_units. Again thi
 ### What would you change from this process, if you had the chance to do so?
 The most glaring issue I have with this process is the fact that it relies on a JSON file. When you said, "The Growers see the grower missions in the GrowerApp in order to fulfill their daily tasks, as well as report back all sorts of data regarding the harvest" I would envision a more advanced approach to data capture. Similar to how tracking on a website is implemented you could invoke an API when the grower mission is updated passing all the relevant data as parameters. This could be done through a streaming pipeline or just by simply invoking an API to a FAAS. 
 
-![alt_text](/images/ontology_raw.PNG)
 
-## Table of Contents
+
 
