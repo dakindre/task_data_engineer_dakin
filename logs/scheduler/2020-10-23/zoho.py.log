@@ -537,3 +537,13 @@ NameError: name 'run_this' is not defined
 [2020-10-24 00:59:10,724] {logging_mixin.py:112} INFO - [2020-10-24 00:59:10,724] {dagbag.py:417} INFO - Filling up the DagBag from /home/dakindre/airflow/dags/zoho.py
 [2020-10-24 00:59:10,730] {scheduler_job.py:1601} INFO - DAG(s) dict_keys(['zoho']) retrieved from /home/dakindre/airflow/dags/zoho.py
 [2020-10-24 00:59:10,768] {scheduler_job.py:162} INFO - Processing /home/dakindre/airflow/dags/zoho.py took 0.049 seconds
+[2020-10-24 01:00:02,794] {scheduler_job.py:154} INFO - Started process (PID=7659) to work on /home/dakindre/airflow/dags/zoho.py
+[2020-10-24 01:00:02,796] {scheduler_job.py:1589} INFO - Processing file /home/dakindre/airflow/dags/zoho.py for tasks to queue
+[2020-10-24 01:00:02,797] {logging_mixin.py:112} INFO - [2020-10-24 01:00:02,797] {dagbag.py:417} INFO - Filling up the DagBag from /home/dakindre/airflow/dags/zoho.py
+[2020-10-24 01:00:02,802] {scheduler_job.py:1601} INFO - DAG(s) dict_keys(['zoho']) retrieved from /home/dakindre/airflow/dags/zoho.py
+[2020-10-24 01:00:02,843] {scheduler_job.py:162} INFO - Processing /home/dakindre/airflow/dags/zoho.py took 0.049 seconds
+[2020-10-24 01:00:54,835] {scheduler_job.py:154} INFO - Started process (PID=7771) to work on /home/dakindre/airflow/dags/zoho.py
+[2020-10-24 01:00:54,841] {scheduler_job.py:1589} INFO - Processing file /home/dakindre/airflow/dags/zoho.py for tasks to queue
+[2020-10-24 01:00:54,843] {logging_mixin.py:112} INFO - [2020-10-24 01:00:54,843] {dagbag.py:417} INFO - Filling up the DagBag from /home/dakindre/airflow/dags/zoho.py
+[2020-10-24 01:00:54,851] {scheduler_job.py:1601} INFO - DAG(s) dict_keys(['zoho']) retrieved from /home/dakindre/airflow/dags/zoho.py
+[2020-10-24 01:00:54,896] {scheduler_job.py:162} INFO - Processing /home/dakindre/airflow/dags/zoho.py took 0.062 seconds
