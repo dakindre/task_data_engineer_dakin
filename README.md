@@ -23,10 +23,10 @@ The third level represents the "tasks" belonging to the farming_units. Again thi
 
 ### How would you expose this data to users (who use SQL)?
 
-In order to read t. Maybe a daily process. The nice feature as I've learned to using arrays in DBs is that the ETL schema would not need to be altered each time a new item was created. The ETL process would then write out to BigQuery using the same array structure. Of course there is an assumed knowledge of knowing how to UNNEST the data but ultimately people profficient in SQL could gain insight about specific information relating to farming_units on a mission level.
+There are several approaches that would work here but for the purposes of addressing data warehousing I'll choose that. An ETL pipeline could be developed to run at a specified frequency in which you extract the data from mongo, apply transformations (reducing the nesting level. Cannot have arrays of arrays in BQ), and ultimately writing out to a historical talbe in BQ. You could also capture the evolution of missions over time by appending the data frequently. 
 
 ### What would you change from this process, if you had the chance to do so?
-The most glaring issue I have with this process is the fact that it relies on a JSON file. When you said, "The Growers see the grower missions in the GrowerApp in order to fulfill their daily tasks, as well as report back all sorts of data regarding the harvest" I would envision a more advanced approach to data capture. Similar to how tracking on a website is implemented you could invoke an API when the grower mission is updated passing all the relevant data as parameters. This could be done through a streaming pipeline or just by simply invoking via API a FaaS.
+I find the reliance on a JSON file to be annoying. I would instead find a scalable way to write data directly from application to DB. I am not a huge fan of data lakes as I think they end up being very poorly managed. The fewer files the better.  
 
 
 
