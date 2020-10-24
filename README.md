@@ -23,10 +23,10 @@ The third level represents the "tasks" belonging to the farming_units. Again thi
 
 ### How would you expose this data to users (who use SQL)?
 
-There are several approaches that would work here but for the purposes of addressing data warehousing I'll choose that. An ETL pipeline could be developed to run at a specified frequency in which you extract the data from mongo, apply transformations (reducing the nesting level. Cannot have arrays of arrays in BQ), and ultimately writing out to a historical talbe in BQ. You could also capture the evolution of missions over time by appending the data frequently. 
+There are several approaches that would work here but for the purposes of addressing data warehousing I'll choose that. An ETL pipeline could be developed to run at a specified frequency in which you extract the data from mongo, apply transformations (reducing the nesting level. Cannot have arrays of arrays in BQ), and ultimately writing out to BQ appending to a historical table to gain insight of the evolution of missions over time.
 
 ### What would you change from this process, if you had the chance to do so?
-I find the reliance on a JSON file to be annoying. I would instead find a scalable way to write data directly from application to DB. I am not a huge fan of data lakes as I think they end up being very poorly managed. The fewer files the better.  
+I find the reliance on a JSON file to be annoying. I would instead find a scalable way to write data directly from application to DB. It's then accessible for any number of applications that pull from Mongo. I am not a huge fan of data lakes as I think they end up being very poorly managed.
 
 
 
