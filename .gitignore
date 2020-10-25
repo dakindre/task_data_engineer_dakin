@@ -1,3 +1,7 @@
-airflow*/
 logs/
 config/credentials.yml
+airflow-webserver.log
+airflow-webserver.out
+aiflow.config
+airflow.db
+unittests.cfg
