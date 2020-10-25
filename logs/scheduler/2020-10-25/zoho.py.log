@@ -1648,3 +1648,13 @@
 [2020-10-25 13:34:16,408] {logging_mixin.py:112} INFO - [2020-10-25 13:34:16,408] {dagbag.py:417} INFO - Filling up the DagBag from /home/dakindre/airflow/dags/zoho.py
 [2020-10-25 13:34:16,417] {scheduler_job.py:1601} INFO - DAG(s) dict_keys(['zoho']) retrieved from /home/dakindre/airflow/dags/zoho.py
 [2020-10-25 13:34:16,475] {scheduler_job.py:162} INFO - Processing /home/dakindre/airflow/dags/zoho.py took 0.072 seconds
+[2020-10-25 13:35:08,506] {scheduler_job.py:154} INFO - Started process (PID=3198) to work on /home/dakindre/airflow/dags/zoho.py
+[2020-10-25 13:35:08,510] {scheduler_job.py:1589} INFO - Processing file /home/dakindre/airflow/dags/zoho.py for tasks to queue
+[2020-10-25 13:35:08,510] {logging_mixin.py:112} INFO - [2020-10-25 13:35:08,510] {dagbag.py:417} INFO - Filling up the DagBag from /home/dakindre/airflow/dags/zoho.py
+[2020-10-25 13:35:08,516] {scheduler_job.py:1601} INFO - DAG(s) dict_keys(['zoho']) retrieved from /home/dakindre/airflow/dags/zoho.py
+[2020-10-25 13:35:08,556] {scheduler_job.py:162} INFO - Processing /home/dakindre/airflow/dags/zoho.py took 0.050 seconds
+[2020-10-25 13:36:00,556] {scheduler_job.py:154} INFO - Started process (PID=3314) to work on /home/dakindre/airflow/dags/zoho.py
+[2020-10-25 13:36:00,567] {scheduler_job.py:1589} INFO - Processing file /home/dakindre/airflow/dags/zoho.py for tasks to queue
+[2020-10-25 13:36:00,568] {logging_mixin.py:112} INFO - [2020-10-25 13:36:00,568] {dagbag.py:417} INFO - Filling up the DagBag from /home/dakindre/airflow/dags/zoho.py
+[2020-10-25 13:36:00,585] {scheduler_job.py:1601} INFO - DAG(s) dict_keys(['zoho']) retrieved from /home/dakindre/airflow/dags/zoho.py
+[2020-10-25 13:36:00,627] {scheduler_job.py:162} INFO - Processing /home/dakindre/airflow/dags/zoho.py took 0.071 seconds
