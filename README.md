@@ -31,5 +31,7 @@ I find the reliance on a JSON file to be annoying. I would instead find a scalab
 
 
 
-## Task 1
+## Task 3
 
+
+The diagram below outlines my general approach to a semi real-time infrastructure in AWS. The task specified that the request and demands of teams are likely to change over time. In order to accomodate different demands for the data the key component is in the IoT topic/rule definitions. Can subscribe/unsubsribe to topics as needed to gain insight or simply store all the data in a data lake to be used later. The IoT rules then are the determinant service for how the data is processed. Including new rules essentially allows you to build new pipelines based on the specific departmental need. For the sake of 
