@@ -54,3 +54,10 @@ The third pipeline simply writes the data to AWS message queue service. Each mes
 #### Question 2: Explain choices/caveats of other systems and reason the choice
 I chose this approach because I've found that cloud services are highly performant and scalable in contrast to custom pipelines. They are also much easier (typically) to provision and deploy. I am not an expert in IoT processes so I chose a fairly standard approach here. One problem with this approach is that potentially you store redundant data. That can become expensive quickly. I would have instead like to choose a system that has a single source of truth and then build various pipelines off of that. Although I think given the design of IoT cores and rules the intention is to split the pipelines at this point. At least that was my understanding. 
 
+
+#### Question 3: How would you structure the code? What would you implement to ease development effort?
+I think the implementation speaks for itself in terms of code complexity. The core coding components would reside within the lambda function themselves. The logic there would be specific to the use cases of the data. For example for software you would need to format the data in a way that is usable for them within the lambda before publishing. Each lambda would be invoked via API and would be integrated with a CI/CD (CircleCI) tool so that you could make modifications immeadiately to the pipeline.
+
+
+#### Question 4: How do you envision the long term maintenance?
+The maintenance required to expand and maintain the pipelines would be quite easy. Due to the wide varieties of services that IoT core can connect with any new pipeline can be built from that block. Because Infarm uses a similar approach to sensors (assumed) in each module the number of rules and topics would be relatively easy to maintain after initial development. 
