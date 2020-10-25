@@ -4,8 +4,12 @@ import requests
 import json
 import yaml as _yaml
 from airflow import DAG
+from contextlib import contextmanager
 from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
+import extraction.google_sheet_extraction as google_sheet_extraction
+
+
 
 item_args = {
     'name': 'test_2',
@@ -21,6 +25,8 @@ dag = DAG(
 
 
 class ApiRequest:
+  _base_url = "https://inventory.zoho.com/api/v1/organizations?="
+
   def __init__(self):
     self.zoho_client_id, self.zoho_client_secret, self.zoho_refresh_token = self.get_creds()
     self.zoho_access_token = self.get_access_token()
@@ -54,6 +60,12 @@ class ApiRequest:
     response = requests.request("GET", url, headers=headers, data = {})
     return response.json()['organizations'][0]['organization_id']
 
+  def create_zoho_org(self):
+    url = "https://inventory.zoho.com/api/v1/organizations?="
+    headers = {
+      'Authorization': f'Zoho-oauthtoken {self.zoho_access_token}'
+    }
+
 
   def create_item(self):
     url = f'https://inventory.zoho.com/api/v1/items?organization_id={self.zoho_org}'
@@ -63,7 +75,7 @@ class ApiRequest:
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
     }
 
-    payload = {'JSONString': '{"name": "test_ohhhh_yeah"}'}
+    payload = {'JSONString': '{"name": "test_1"}'}
 
     response = requests.request("POST", url, headers=headers, data=payload)
     print(response.json())
@@ -79,14 +91,42 @@ class ApiRequest:
     response = requests.request("POST", url, headers=headers, data = payload)
     print(response.json())
 
-
-def main():
+def api_call():
     api = ApiRequest()
     api.create_item()
 
-task = PythonOperator(
-    task_id='zoho_item_insert',
-    python_callable=main,
-    dag=dag,
-)
+class DagFactory:
+  def __init__(self, dag_id, dag_data, schedule):
+        self.dag_id = dag_id
+        self.dag_data = dag_data
+        self.schedule = schedule
+        self.default_args = {
+            'owner': 'Drew',
+            'start_date': days_ago(2)
+        }
 
+  @contextmanager
+  def _dag(self):
+      with DAG(self.dag_id, default_args=self.default_args, schedule_interval=self.schedule) as dag:
+          yield dag
+
+  def org_dag(self):
+    with self._dag() as dag:
+      task = PythonOperator(
+        task_id=self.dag_data['item_name'],
+        python_callable=api_call,
+        op_kwargs={'random_base': },
+        dag=dag
+      )
+    return dag
+
+
+
+organizations, source_of_truth = google_sheet_extraction.get_sheet_data()
+for orgs in organizations:
+  dag_factory = DagFactory(
+    dag_id = orgs['org_id'],
+    dag_data = source_of_truth,
+    schedule = '@daily'
+  )
+  dag_factory.org_dag()
