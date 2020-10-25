@@ -1,0 +1,3 @@
+airflow*/
+logs/
+config/credentials.yml
