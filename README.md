@@ -33,5 +33,24 @@ I find the reliance on a JSON file to be annoying. I would instead find a scalab
 
 ## Task 3
 
+#### Diagram
 
-The diagram below outlines my general approach to a semi real-time infrastructure in AWS. The task specified that the request and demands of teams are likely to change over time. In order to accomodate different demands for the data the key component is in the IoT topic/rule definitions. Can subscribe/unsubsribe to topics as needed to gain insight or simply store all the data in a data lake to be used later. The IoT rules then are the determinant service for how the data is processed. Including new rules essentially allows you to build new pipelines based on the specific departmental need. For the sake of 
+The diagram below outlines my general approach to a semi real-time infrastructure in AWS. The task specified that the request and demands of teams are likely to change over time. In order to accomodate different demands for the data the key component is in the IoT topic/rule definitions. You can subscribe/unsubsribe to topics as needed to gain insight. The IoT rules then are the determinant service for how the data is further processed and which services are used. Including new rules opens up new avenues of data processing and exposure. This approach is easy to maintain and scalable from within the console. Very little coding is needed within the IoT core to accomplish these tasks. The IoT analytics core can use data from a multitude of sources. In this example we just connect it with the IoT core. 
+
+
+The diagram shows as an example three different rules all with different service destinations. Those rules are explained below
+
+##### Rule #1
+The first pipeline is intended to capture and store semi-raw data. I've included a lambda function in there in case some preprocessing should be done for long term storage. I chose to include this because many times stakeholders will come with requests to analyze historical data. S3 storage can be archived at low costs and eventually removed if needed. This is more of a safeguard process in case you need to reference older data.
+
+##### Rule #2
+The second pipeline is intended for analysis. This process services both analysts and data scientists. Essentially it utilizes the AWS IoT Analytics service core (channels, pipelines, data stores, data sets, and notebook). This is a very easy to understand and fully scalable system. I will not go into detail about each sub-service but will elaborate on the additional services I've included. After the pipeline a lambda function is invoked. This essentially is the cleaning portion of the pipeline. The data can be standardized and filtered. Additionally certain triggers could be added in the lambda for anomoly detection and error handling. The data is then stored in S3 which acts as the data store for our purposes. This could be either a S3 bucket created by the analytics service or one already in existence. The datasets using the data store source are then referenced by a reporting tool (quicksight in this example) or the jupyter notebooks which can be used by data scientists to analyze a series of events. 
+
+##### Rule #3
+The third pipeline simply writes the data to AWS message queue service. Each message invokes a lambda function which can then process the data and write it to any number of sources that the software team would need.
+
+![alt_text](/images/Task3.png)
+
+#### Question 2: Explain choices/caveats of other systems and reason the choice
+I chose this approach because I've found that cloud services are highly performant and scalable in contrast to custom pipelines. They are also much easier (typically) to provision and deploy. I am not an expert in IoT processes so I chose a fairly standard approach here. One problem with this approach is that potentially you store redundant data. That can become expensive quickly. I would have instead like to choose a system that has a single source of truth and then build various pipelines off of that. Although I think given the design of IoT cores and rules the intention is to split the pipelines at this point. At least that was my understanding. 
+
