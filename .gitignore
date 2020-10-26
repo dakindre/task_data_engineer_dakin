@@ -4,4 +4,4 @@ airflow-webserver.log
 airflow-webserer.out
 unittests.cfg
 logs/
-config/credentials.yml
+config/
