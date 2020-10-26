@@ -30,6 +30,16 @@ I find the reliance on a JSON file to be annoying. I would instead find a scalab
 
 ## Task 2
 
+The dag file I created to complete this assignment can be found in the /dag folder. The output is available in this [google sheet](https://docs.google.com/spreadsheets/d/1nqMmNdDHQFyNrqhYTjvISKaeCxZAskZUHbWH509vfW0/edit?usp=sharing) . I've outlined the results seen there below.
+
+
+### Results
+The file contains two complete runs of the 900 items found in
+
+
+
+The file is composed of three parts as is shown below. The results
+
 https://docs.google.com/spreadsheets/d/1nqMmNdDHQFyNrqhYTjvISKaeCxZAskZUHbWH509vfW0/edit?usp=sharing
 
 
