@@ -28,7 +28,9 @@ There are several approaches that would work here but for the purposes of addres
 ### What would you change from this process, if you had the chance to do so?
 I find the reliance on a JSON file to be annoying. I would instead find a scalable way to write data directly from application to DB. It's then accessible for any number of applications that pull from Mongo. I am not a huge fan of data lakes as I think they end up being very poorly managed.
 
+## Task 2
 
+https://docs.google.com/spreadsheets/d/1nqMmNdDHQFyNrqhYTjvISKaeCxZAskZUHbWH509vfW0/edit?usp=sharing
 
 
 ## Task 3
