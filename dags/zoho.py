@@ -3,15 +3,17 @@ import time
 import requests
 import json
 import random
+import os
+import gspread
 import yaml as _yaml
 from airflow import DAG
 from contextlib import contextmanager
 from airflow.utils.dates import days_ago
+from oauth2client.service_account import ServiceAccountCredentials
 from airflow.operators.python_operator import PythonOperator
-from google.google_sheets import(
-  get_sheet_data,
-  write_output
-)
+
+
+SCOPE = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
 
 class ApiRequest:
@@ -84,6 +86,7 @@ class ApiRequest:
     return response_json.get('organization').get('organization_id')
 
   def sync_items(self):
+    print('sync items')
     # get current list of items
     items_list = self.get_items_list()
     write_array = []
@@ -187,6 +190,33 @@ class DagFactory:
       )
     return dag
 
+def get_creds():
+    creds = ServiceAccountCredentials.from_json_keyfile_name(
+        os.path.join(os.path.dirname(__file__), '..', 'config', 'google_sheet_auth.json')
+        , SCOPE)
+    return gspread.authorize(creds)
+
+
+def write_output(data):
+    client = get_creds()
+
+    sheet = client.open("Infarm_Zoho_Results").worksheet("API_Create")
+
+    rows = data
+
+    sheet.insert_rows(rows, 2)
+
+
+def get_sheet_data():
+    client = get_creds()
+
+    org_sheet = client.open("Infarm Sample").worksheet("Zoho Warehouses")
+    source_of_truth = client.open("Infarm Sample").worksheet("Items Source of Truth")
+
+    org_sheet_data = org_sheet.get_all_records()
+    source_of_truth = source_of_truth.get_all_records()
+
+    return org_sheet_data, source_of_truth
 
 organizations, source_of_truth = get_sheet_data()
 for orgs in organizations:
