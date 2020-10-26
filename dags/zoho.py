@@ -91,7 +91,7 @@ class ApiRequest:
     items_list = self.get_items_list()
     write_array = []
     print(items_list)
-    
+
     for item in self.item_data:
       # item exists but doesn't match entirely so an update is needed
       item_id = [x.get('item_id') for x in items_list if x.get('item_name')== item.get('item_name')]
@@ -180,35 +180,27 @@ def get_sheet_data():
 
     return org_sheet_data, source_of_truth
 
-if __name__ == "__main__":
-  organizations, source_of_truth = get_sheet_data()
-  for orgs in organizations:
-    main(
-      org_name = orgs['org_name'],
-      item_data = source_of_truth
-    )
+organizations, source_of_truth = get_sheet_data()
 
-# organizations, source_of_truth = get_sheet_data()
-
-# for orgs in organizations:
-#   org_id = str(orgs['org_id'])
-#   default_args = {
-#     'owner': 'Drew',
-#     'start_date': days_ago(2)
-#   }
+for orgs in organizations:
+  org_id = str(orgs['org_id'])
+  default_args = {
+    'owner': 'Drew',
+    'start_date': days_ago(2)
+  }
   
 
-#   globals()[f'zohowarehouse_{org_id}'] = DAG(
-#     dag_id=f'zohowarehouse_{org_id}',
-#     default_args=default_args,
-#     schedule_interval='@daily')
+  globals()[f'zohowarehouse_{org_id}'] = DAG(
+    dag_id=f'zohowarehouse_{org_id}',
+    default_args=default_args,
+    schedule_interval='@daily')
 
-#   globals()[f'task_{org_id}'] = PythonOperator(     
-#     dag=globals()[f'zohowarehouse_{org_id}'],
-#     task_id=f'zoho_update',
-#     python_callable=main,
-#     op_kwargs={
-#       'org_name': orgs['org_name'],
-#       'item_data': source_of_truth
-#     }
-#   )
+  globals()[f'task_{org_id}'] = PythonOperator(     
+    dag=globals()[f'zohowarehouse_{org_id}'],
+    task_id=f'zoho_update',
+    python_callable=main,
+    op_kwargs={
+      'org_name': orgs['org_name'],
+      'item_data': source_of_truth
+    }
+  )
