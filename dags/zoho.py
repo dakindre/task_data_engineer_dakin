@@ -90,9 +90,9 @@ class ApiRequest:
 
     for item in self.item_data:
       # item exists but doesn't match entirely so an update is needed
-      item_id = [x.get('item_id') for x in items_list if x.get('item_name')== item.get('item_name')][0]
+      item_id = [x.get('item_id') for x in items_list if x.get('item_name')== item.get('item_name')]
       if item_id:
-        write_array.append(self.update_item(item, item_id))
+        write_array.append(self.update_item(item, item_id[0]))
       else:
         # item doesn't exist so item creation is needed
         write_array.append(self.create_item(item))
@@ -150,25 +150,19 @@ def main(org_name, item_data):
     api = ApiRequest(org_name, item_data)
     api.sync_items()
 
-
-
-if __name__ == "__main__":
-  organizations, source_of_truth = get_sheet_data()
-  print(organizations, source_of_truth)
-    # main(
-    #   org_name = 'Infarm_Hamburg',
-    #   item_data = [{
-    #     'item_name': 'DE_PRICETAG_PFEFFERMINZE_NEW_1_35',
-    #     'category': 'Marketing',
-    #     'Supplier_Name': 'PRINTSTAR GmbH'
-    #   }]
-    # )
+# if __name__ == "__main__":
+#   organizations, source_of_truth = get_sheet_data()
+#   for orgs in organizations:
+#     main(
+#       org_name = orgs['org_name'],
+#       item_data = source_of_truth
+#     )
     
 class DagFactory:
-  def __init__(self, dag_id, org_data, source_data, schedule):
+  def __init__(self, dag_id, org_name, item_data, schedule):
         self.dag_id = dag_id
-        self.org_data = org_data
-        self.source_data = source_data
+        self.org_name = org_name
+        self.item_data = item_data
         self.schedule = schedule
         self.default_args = {
             'owner': 'Drew',
@@ -186,20 +180,20 @@ class DagFactory:
         task_id=self.dag_id,
         python_callable=main,
         op_kwargs={
-          'org_data': self.org_data,
-          'source_data': self.source_data
+          'org_name': self.org_name,
+          'item_data': self.item_data
         },
         dag=dag
       )
     return dag
 
 
-# organizations, source_of_truth = get_sheet_data()
-# for orgs in organizations:
-#   dag_factory = DagFactory(
-#     dag_id = orgs['org_id'],
-#     org_data = orgs,
-#     source_data = source_of_truth,
-#     schedule = '@daily'
-#   )
-#   dag_factory.org_dag()
+organizations, source_of_truth = get_sheet_data()
+for orgs in organizations:
+  dag_factory = DagFactory(
+    dag_id = str(orgs['org_id']),
+    org_name = orgs['org_name'],
+    item_data = source_of_truth,
+    schedule = '@daily'
+  )
+  dag_factory.org_dag()
