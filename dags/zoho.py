@@ -90,10 +90,12 @@ class ApiRequest:
     # get current list of items
     items_list = self.get_items_list()
     write_array = []
-
+    print(items_list)
+    
     for item in self.item_data:
       # item exists but doesn't match entirely so an update is needed
       item_id = [x.get('item_id') for x in items_list if x.get('item_name')== item.get('item_name')]
+      print(item_id)
       if item_id:
         write_array.append(self.update_item(item, item_id[0]))
       else:
@@ -116,7 +118,7 @@ class ApiRequest:
     item_struct = {
       "name": f"{item.get('item_name')}",
       "group_name": f"{item.get('category')}",
-      "vendor_name": f"{item.get('Supplier_Name')}"
+      "vendor_name": f"{item.get('supplier_name')}"
     }
 
     payload = {'JSONString': json.dumps(item_struct)}
@@ -135,7 +137,7 @@ class ApiRequest:
     item_struct = {
       "name": f"{item.get('item_name')}",
       "group_name": f"{item.get('category')}",
-      "vendor_name": f"{item.get('Supplier_Name')}"
+      "vendor_name": f"{item.get('supplier_name')}"
     }
 
     payload = {'JSONString': json.dumps(item_struct)}
@@ -148,47 +150,10 @@ class ApiRequest:
     return create_item
 
 
-
 def main(org_name, item_data):
     api = ApiRequest(org_name, item_data)
     api.sync_items()
 
-# if __name__ == "__main__":
-#   organizations, source_of_truth = get_sheet_data()
-#   for orgs in organizations:
-#     main(
-#       org_name = orgs['org_name'],
-#       item_data = source_of_truth
-#     )
-    
-class DagFactory:
-  def __init__(self, dag_id, org_name, item_data, schedule):
-        self.dag_id = dag_id
-        self.org_name = org_name
-        self.item_data = item_data
-        self.schedule = schedule
-        self.default_args = {
-            'owner': 'Drew',
-            'start_date': days_ago(2)
-        }
-
-  @contextmanager
-  def _dag(self):
-      with DAG(self.dag_id, default_args=self.default_args, schedule_interval=self.schedule) as dag:
-          yield dag
-
-  def org_dag(self):
-    with self._dag() as dag:
-      task = PythonOperator(
-        task_id=self.dag_id,
-        python_callable=main,
-        op_kwargs={
-          'org_name': self.org_name,
-          'item_data': self.item_data
-        },
-        dag=dag
-      )
-    return dag
 
 def get_creds():
     creds = ServiceAccountCredentials.from_json_keyfile_name(
@@ -199,11 +164,8 @@ def get_creds():
 
 def write_output(data):
     client = get_creds()
-
-    sheet = client.open("Infarm_Zoho_Results").worksheet("API_Create")
-
+    sheet = client.open("Infarm_Zoho_Results").worksheet("API_Results")
     rows = data
-
     sheet.insert_rows(rows, 2)
 
 
@@ -218,12 +180,35 @@ def get_sheet_data():
 
     return org_sheet_data, source_of_truth
 
-organizations, source_of_truth = get_sheet_data()
-for orgs in organizations:
-  dag_factory = DagFactory(
-    dag_id = str(orgs['org_id']),
-    org_name = orgs['org_name'],
-    item_data = source_of_truth,
-    schedule = '@daily'
-  )
-  dag_factory.org_dag()
+if __name__ == "__main__":
+  organizations, source_of_truth = get_sheet_data()
+  for orgs in organizations:
+    main(
+      org_name = orgs['org_name'],
+      item_data = source_of_truth
+    )
+
+# organizations, source_of_truth = get_sheet_data()
+
+# for orgs in organizations:
+#   org_id = str(orgs['org_id'])
+#   default_args = {
+#     'owner': 'Drew',
+#     'start_date': days_ago(2)
+#   }
+  
+
+#   globals()[f'zohowarehouse_{org_id}'] = DAG(
+#     dag_id=f'zohowarehouse_{org_id}',
+#     default_args=default_args,
+#     schedule_interval='@daily')
+
+#   globals()[f'task_{org_id}'] = PythonOperator(     
+#     dag=globals()[f'zohowarehouse_{org_id}'],
+#     task_id=f'zoho_update',
+#     python_callable=main,
+#     op_kwargs={
+#       'org_name': orgs['org_name'],
+#       'item_data': source_of_truth
+#     }
+#   )
