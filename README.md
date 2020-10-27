@@ -49,7 +49,6 @@ The file contains two complete runs(By organization) of the ~900 items created i
 The dags were created dynamically based on the organizations that were in the "Zoho Warehouses" tab. You can see in the Airflow UI the different dags with the org_id acting as the dag_id. There is a further explanation of how I constructed this in the code. Below are some sample images
 
 ![alt_text](/images/zoho_dags.PNG)
-![alt_text](/images/zoho_dags_ui.PNG)
 ![alt_text](/images/dag_task.PNG)
 
 ### Code Explanation
