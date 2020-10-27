@@ -40,16 +40,17 @@ The dag file I created to complete this assignment can be found in the /dag fold
 ### Results
 The file contains two complete runs(By organization) of the ~900 items created in Zoho Warehouse. Due to limitation of the trial membership and warnings from Zoho about API limits I only ran it for two organization. The file contains API data related to dynamic creation of (organizations, item list collection, item creation, item updates). Below are two examples of a few of those. You can look through the file for the others. The last image shows the result of the run in zoho inventory UI.
 
-![alt_text](/images/org_creation.png)
-![alt_text](/images/item_creation.png)
-![alt_text](/images/output_sample.png)
-![alt_text](/images/zoho_warehouse_items.png)
+![alt_text](/images/org_creation.PNG)
+![alt_text](/images/item_creation.PNG)
+![alt_text](/images/output_sample.PNG)
+![alt_text](/images/zoho_warehouse_items.PNG)
 
 ### Dynamic Dags
 The dags were created dynamically based on the organizations that were in the "Zoho Warehouses" tab. You can see in the Airflow UI the different dags with the org_id acting as the dag_id. There is a further explanation of how I constructed this in the code. Below are some sample images
 
-![alt_text](/images/zoho_dags.png)
-![alt_text](/images/zoho_dags_ui.png)
+![alt_text](/images/zoho_dags.PNG)
+![alt_text](/images/zoho_dags_ui.PNG)
+![alt_text](/images/dag_task.PNG)
 
 ### Code Explanation
 Below is an explanation of the different sections of the code divided into three main parsts (API, Google Read/Write, Dag Factory)
