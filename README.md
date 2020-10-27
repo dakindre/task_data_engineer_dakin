@@ -8,7 +8,7 @@
 The image below is a sample grower_missions document from the JSON file. For the purposes of this example I modeled it in MongoDB. Due to the schemaless nature of noSQL DB's not every document has to adhere to the same structure. However it is best practice to try and capture data in a similar fashion. I detail below how I would approach this topic. The data hierarchy I've provided is split into three levels. Of course this assumes a certain app design structure to be in place but allows for scalability in it's use of arrays.
 
 #### Level 1: Constant Variables
-These are keys value pairs that should in theory be included in each JSON file such as grower_mission.id, grower_mission.assigned_to and grower_mission.created_at. Of course this is only a sample of which fields might be included here. 
+These are key value pairs that should in theory be included in each JSON file such as grower_mission.id, grower_mission.assigned_to and grower_mission.created_at. Of course this is only a sample of which fields might be included here. 
 
 
 #### Level 2: Dynamic harvest Data
