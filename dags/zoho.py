@@ -86,11 +86,9 @@ class ApiRequest:
     return response_json.get('organization').get('organization_id')
 
   def sync_items(self):
-    print('sync items')
     # get current list of items
     items_list = self.get_items_list()
     write_array = []
-    print(items_list)
 
     for item in self.item_data:
       # item exists but doesn't match entirely so an update is needed
