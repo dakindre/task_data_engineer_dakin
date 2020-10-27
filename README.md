@@ -46,7 +46,7 @@ The file contains two complete runs(By organization) of the ~900 items created i
 ![alt_text](/images/zoho_warehouse_items.PNG)
 
 ### Dynamic Dags
-The dags were created dynamically based on the organizations that were in the "Zoho Warehouses" tab. You can see in the Airflow UI the different dags with the org_id acting as the dag_id. There is a further explanation of how I constructed this in the code. Below are some sample images
+The dags were created dynamically based on the organizations that were in the "Zoho Warehouses" tab. You can see the different dags in the bag below with the org_id acting as the dag_id. There is a further explanation of how I constructed this in the code. Below are some sample images
 
 ![alt_text](/images/zoho_dags.PNG)
 ![alt_text](/images/dag_task.PNG)
@@ -55,7 +55,7 @@ The dags were created dynamically based on the organizations that were in the "Z
 Below is an explanation of the different sections of the code divided into three main parsts (API, Google Read/Write, Dag Factory)
 
 #### Zoho API
-The API code section allows for 5 main functions. One limitation I ran into was the get_items_list function does not return a full list of the existing items in the org. Therefore the matching for determining whether to update or create doesn't always result in the correct operation. Due to time constraints I did not look further into the issue. 
+The API code section consists of five API functions. One limitation I ran into was the get_items_list function does not return a full list of the existing items in the org. Therefore the matching for determining whether to update or create doesn't always result in the correct operation. Due to time constraints I did not look further into the issue. 
 
 1. [get_org](https://github.com/dakindre/infarm/blob/23951c630c04b70a485586b7b6481d0dc98524df/dags/zoho.py#L52): gets the org_id using org_name
 2. [create_org](https://github.com/dakindre/infarm/blob/23951c630c04b70a485586b7b6481d0dc98524df/dags/zoho.py#L61): created a new organization if it doesn't exist and set org_id
