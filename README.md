@@ -30,18 +30,44 @@ I find the reliance on a JSON file to be annoying. I would instead find a scalab
 
 ## Task 2
 
-The dag file I created to complete this assignment can be found in the /dag folder. The output is available in this [google sheet](https://docs.google.com/spreadsheets/d/1nqMmNdDHQFyNrqhYTjvISKaeCxZAskZUHbWH509vfW0/edit?usp=sharing) . I've outlined the results seen there below.
+The dag file I created to complete this assignment can be found in the /dag folder. The output is available in this [google sheet](https://docs.google.com/spreadsheets/d/1nqMmNdDHQFyNrqhYTjvISKaeCxZAskZUHbWH509vfW0/edit?usp=sharing) . I've subdivided this into three parts:
+
+1. Results
+2. Dynamic Dags
+3. Code Explanation
 
 
 ### Results
-The file contains two complete runs of the 900 items found in
+The file contains two complete runs(By organization) of the ~900 items created in Zoho Warehouse. Due to limitation of the trial membership and warnings from Zoho about API limits I only ran it for two organization. The file contains API data related to dynamic creation of (organizations, item list collection, item creation, item updates). Below are two examples of a few of those. You can look through the file for the others. The last image shows the result of the run in zoho inventory UI.
 
+![alt_text](/images/org_creation.png)
+![alt_text](/images/item_creation.png)
+![alt_text](/images/output_sample.png)
+![alt_text](/images/zoho_warehouse_items.png)
 
+### Dynamic Dags
+The dags were created dynamically based on the organizations that were in the "Zoho Warehouses" tab. You can see in the Airflow UI the different dags with the org_id acting as the dag_id. There is a further explanation of how I constructed this in the code. Below are some sample images
 
-The file is composed of three parts as is shown below. The results
+![alt_text](/images/zoho_dags.png)
+![alt_text](/images/zoho_dags_ui.png)
 
-https://docs.google.com/spreadsheets/d/1nqMmNdDHQFyNrqhYTjvISKaeCxZAskZUHbWH509vfW0/edit?usp=sharing
+### Code Explanation
+Below is an explanation of the different sections of the code divided into three main parsts (API, Google Read/Write, Dag Factory)
 
+#### Zoho API
+The API code section allows for 5 main functions. One limitation I ran into was the get_items_list function does not return a full list of the existing items in the org. Therefore the matching for determining whether to update or create doesn't always result in the correct operation. Due to time constraints I did not look further into the issue. 
+
+1. [get_org](https://github.com/dakindre/infarm/blob/23951c630c04b70a485586b7b6481d0dc98524df/dags/zoho.py#L52): gets the org_id using org_name
+2. [create_org](https://github.com/dakindre/infarm/blob/23951c630c04b70a485586b7b6481d0dc98524df/dags/zoho.py#L61): created a new organization if it doesn't exist and set org_id
+3. [get_items_list](https://github.com/dakindre/infarm/blob/23951c630c04b70a485586b7b6481d0dc98524df/dags/zoho.py#L107): retrieve items belonging to the specified org
+4. [create_item](https://github.com/dakindre/infarm/blob/23951c630c04b70a485586b7b6481d0dc98524df/dags/zoho.py#L134): creates a new item in the specififed org
+5. [update_item](https://github.com/dakindre/infarm/blob/23951c630c04b70a485586b7b6481d0dc98524df/dags/zoho.py#L115): updates a specified item within the org
+
+#### Dynamic Dags
+The code to dynamically generate dags can be found [here](https://github.com/dakindre/infarm/blob/23951c630c04b70a485586b7b6481d0dc98524df/dags/zoho.py#L185). It's very simple to understand. The dags are generated based on the org_id as mentioned above. The use of `globals()[f'zohowarehouse_{org_id}'] ` allows a dynamic variable to be set and generates a unique dag for each org. 
+
+#### Google Functions
+The google functions are just the way of extracting data from the google sheet and writing the output to. If you'd like to test this you could put your own service account credentials in a config folder. 
 
 ## Task 3
 
